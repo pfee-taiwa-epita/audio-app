@@ -1,5 +1,7 @@
 import streamlit as st
 
+from src.gdrive import google_auth
+
 
 def label_filter():
     if 'label_name' not in st.session_state:
@@ -24,6 +26,11 @@ def default_sidebar():
         label_filter()
         sample_value()
 
+        #disable for now
+        #google_auth()
+
         debug_information()
+
+
 
 
