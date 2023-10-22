@@ -4,10 +4,10 @@ import streamlit as st
 import uuid
 import datetime
 import socket
+import uuid
+import hashlib
 
-from io import BytesIO
-
-from src.gdrive import write_file_to_gdrive
+from src.dataset import push_files_to_hub
 
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
@@ -15,12 +15,12 @@ RATE = 16000
 CHUNK = 1024
 RECORD_SECONDS = 3
 
-
 def record(label_name, nb_sample) -> None:
+    WAVE_OUTPUT_FOLDER = st.session_state['wave_output_folder']
 
     for i in range(nb_sample):
         metadata = {}
-        metadata['id'] = str(uuid.uuid4())
+        metadata['id'] = hashlib.sha256(str(uuid.uuid4()).encode()).hexdigest()[:8]
 
         current_datetime = datetime.datetime.now()
         metadata['date'] = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
@@ -29,7 +29,7 @@ def record(label_name, nb_sample) -> None:
         metadata['user'] = socket.gethostbyname(socket.gethostname())
         metadata['label'] = label_name
 
-        file_name = f"{label_name}/{label_name}-{metadata['id']}.wav"
+        file_name = WAVE_OUTPUT_FOLDER + f"{label_name}-{metadata['id']}.wav"
         audio = pyaudio.PyAudio()
         stream = audio.open(format=FORMAT,
                         channels=CHANNELS,
@@ -52,19 +52,29 @@ def record(label_name, nb_sample) -> None:
         stream.close()
         audio.terminate()
 
-        audio_data = BytesIO()
-        with wave.open(audio_data, 'wb') as wf:
-            wf.setnchannels(CHANNELS)
-            wf.setsampwidth(audio.get_sample_size(FORMAT))
-            wf.setframerate(RATE)
-            wf.writeframes(b''.join(frames))
+        waveFile = wave.open(file_name, 'wb')
+        waveFile.setnchannels(CHANNELS)
+        waveFile.setsampwidth(audio.get_sample_size(FORMAT))
+        waveFile.setframerate(RATE)
+
+        for key, value in metadata.items():
+            metadata_str = f"{key}: {value}\n"
+            waveFile.writeframes(metadata_str.encode())
+
+
+        waveFile.writeframes(b''.join(frames))
+        waveFile.close()
+
+        audio_file = open(file_name, 'rb')
+        audio_bytes = audio_file.read()
+        audio_file.close()
         
         with col2:
-            st.audio(audio_data, format='audio/wav', start_time=0)
+            st.audio(audio_bytes, format='audio/wav', start_time=0)
         with col3:     
             st.success('Record Success !', icon="✅")
+    
+    push_files_to_hub()
 
-        write_file_to_gdrive(file_name, audio_data, metadata)
-        
     st.session_state['is_recording'] = False
     st.session_state['progression'] = 0

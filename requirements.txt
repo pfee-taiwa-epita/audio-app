@@ -1,4 +1,8 @@
 streamlit
 pyaudio
 wave
-PyDrive
+huggingface_hub
+datasets
+librosa
+soundfile
+datasets[audio]
