@@ -2,7 +2,7 @@ import streamlit as st
 
 from src.sidebar import label_filter
 from src.utils import keep_session_state_between_pages
-from src.dataset import visualize_audio
+from src.dataset import visualize_audio, download_dataset
 
 
 def sidebar() -> None:
@@ -11,6 +11,7 @@ def sidebar() -> None:
 
 def main() -> None:
     keep_session_state_between_pages(key_suffix='')
+    download_dataset()
     st.title("Audio Visualizer 🎤")
     sidebar()
     visualize_audio()

@@ -6,3 +6,6 @@ datasets
 librosa
 soundfile
 datasets[audio]
+pandas
+numpy
+scipy

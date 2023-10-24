@@ -22,8 +22,4 @@ def default_sidebar() -> None:
     with st.sidebar:
         label_filter()
         sample_value()
-        debug_information()
-
-
-
-
+        
