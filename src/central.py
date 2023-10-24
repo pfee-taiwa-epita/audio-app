@@ -11,7 +11,7 @@ def change_recording_state() -> None:
 
 
 def record_button() -> None:
-    button = st.button("Start Recording", on_click=change_recording_state, disabled=st.session_state['is_recording'])
+    button = st.button("Start Recording", on_click=change_recording_state)
         
 def default_central() -> None:
     init_state()
