@@ -21,7 +21,7 @@ def init_session_state() -> None:
     if 'hugging_face_repo' not in st.session_state:
         st.session_state['hugging_face_repo'] = "PFEE-TxE/audio_sampler"
 
-def create_folder(folder_names: list[str]) -> None:
+def create_folder(folder_names) -> None:
     for folder_name in folder_names:
         if not os.path.exists(folder_name):
             os.makedirs(folder_name)
