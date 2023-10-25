@@ -8,6 +8,7 @@ import uuid
 import hashlib
 
 from src.dataset import push_files_to_hub, add_data_info
+from src.preprocess import preprocess_audio
 
 FORMAT = pyaudio.paInt16
 CHANNELS = 1

@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 
 from src.sidebar import default_sidebar
 from src.central import default_central
@@ -20,9 +21,16 @@ def init_session_state() -> None:
     if 'hugging_face_repo' not in st.session_state:
         st.session_state['hugging_face_repo'] = "PFEE-TxE/audio_sampler"
 
+def create_folder(folder_names: list[str]) -> None:
+    for folder_name in folder_names:
+        if not os.path.exists(folder_name):
+            os.makedirs(folder_name)
+
 def main() -> None:
     init_session_state()
     keep_session_state_between_pages(key_suffix='')
+    create_folder(["records", "preprocess"])
+
 
     download_dataset()
     st.title("Audio Recorder 🎤")
