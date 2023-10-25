@@ -39,7 +39,6 @@ def visualize_audio() -> None:
     try:
         folder_path = st.session_state['dataset_folder'] + "/" + st.session_state['label_name'].lower()
 
-
         cols = st.columns([2, 8, 2, 2])
         with cols[0]:
             st.write("File name")
