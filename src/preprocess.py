@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.interpolate import interp1d
 from scipy.io import wavfile
+import librosa
+import soundfile as sf
 
 def apply_transfer(signal, transfer, interpolation='linear'):
     constant = np.linspace(-1, 1, len(transfer))
@@ -30,3 +32,21 @@ def preprocess_audio(file_path):
     file_path = file_path.split(".wav")[0]
 
     wavfile.write(file_path + "_" + function_name + ".wav", sr, x3)
+
+def preprocess_audio_2(file_path):
+    function_name = "preprocess_audio_2"
+    # Load audio file
+    y, sr = librosa.load(file_path, sr=None, mono=False)
+    # Convert to mono
+    y_mono = librosa.to_mono(y)
+    # Resample to 16 kHz
+    y_resampled = librosa.resample(y_mono, orig_sr=sr, target_sr=16000)
+    #y_resampled = librosa.resample(y_mono, sr, 16000)
+    # Pad/trim to 3 seconds (3 * 16 kHz = 48000 samples)
+    if len(y_resampled) < 48000:
+        y_padded = librosa.util.pad_center(y_resampled, 48000)
+    else:
+        y_padded = y_resampled[:48000]
+    # Save the preprocessed audio to 16-bit PCM WAV format
+    sf.write(file_path + "_" + function_name + ".wav", y_padded, 16000, subtype='PCM_16')
+
