@@ -4,6 +4,9 @@ from scipy.io import wavfile
 import librosa
 import soundfile as sf
 
+from utils import keep_session_state_between_pages
+from audioprocessor import AudioPreprocessor
+
 def apply_transfer(signal, transfer, interpolation='linear'):
     constant = np.linspace(-1, 1, len(transfer))
     interpolator = interp1d(constant, transfer, interpolation)
@@ -44,3 +47,10 @@ def preprocess_audio_2(file_path):
         y_padded = y_resampled[:48000]
     sf.write(file_path + "_" + function_name + ".wav", y_padded, 16000, subtype='PCM_16')
 
+def preprocess_audio_3(file_path):
+    function_name = "preprocess_audio_3"
+    y, sr = librosa.load(file_path, sr=None, mono=False)
+    y_mono = librosa.to_mono(y)
+    p = AudioPreprocessor()
+    audio = p.preprocess(y_mono, sr)
+    sf.write(file_path + "_" + function_name + ".wav", audio, 16000, subtype='PCM_16')
