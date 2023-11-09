@@ -12,6 +12,11 @@ def sample_value() -> None:
         st.session_state['sample_value'] = 2
     number_input_value = st.number_input("Nombre de sample 🧮", key='sample_value', min_value=1, max_value=1000)
 
+def user_name() -> None:
+    if 'user_name' not in st.session_state:
+        st.session_state['user_name'] = ""
+    text_input_value = st.text_input("Nom de l'utilisateur 🧑🏻‍💻", key='user_name')
+
 def debug_information() -> None:
     st.write("# Debug Information 🐜")
     st.write("## Session State")
@@ -20,6 +25,7 @@ def debug_information() -> None:
 
 def default_sidebar() -> None:
     with st.sidebar:
+        user_name()
         label_filter()
         sample_value()
         

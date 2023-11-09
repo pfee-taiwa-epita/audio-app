@@ -1,12 +1,10 @@
 import pandas as pd
 import os
-import numpy as np
 import streamlit as st
 import soundfile as sf
 import re
 
-from huggingface_hub import HfApi, snapshot_download, hf_hub_download
-from datasets import Dataset, Audio, load_dataset
+from huggingface_hub import HfApi, snapshot_download
 
 
 def push_files_to_hub(label: str) -> None:
@@ -35,7 +33,6 @@ def download_dataset() -> None:
 
 def visualize_audio() -> None:
     data = load_data_info()
-    # file_id,label,user_ip,date,timestamp,filename,is_in_dataset,hugging_face_link
     try:
         folder_path = st.session_state['dataset_folder'] + "/" + st.session_state['label_name'].lower()
 
@@ -47,7 +44,7 @@ def visualize_audio() -> None:
         with cols[2]:
             st.write("Date")
         with cols[3]:
-            st.write("User IP")
+            st.write("User Name")
 
         for f in os.listdir(folder_path):
             audio_path = folder_path + "/" + f
@@ -76,7 +73,7 @@ def visualize_audio() -> None:
                     st.write("No date information")
             with cols[3]:
                 try:
-                    st.write(row.user_ip.iloc[0])
+                    st.write(row.user_name.iloc[0])
                 except:
                     st.write("No user IP information")
 
@@ -95,11 +92,12 @@ def add_data_info(new_data_tab):
     for i in range(len(new_data_tab)):
         new_row = {
             'file_id': new_data_tab[i]['file_id'],
-            'label': new_data_tab[i]['label'],
-            'user_ip': new_data_tab[i]['user_ip'], 
+            'label': new_data_tab[i]['label'].lower().replace(" ", "_"),
+            'user_name': new_data_tab[i]['user_name'].lower().replace(" ", "_"),
             'date': new_data_tab[i]['date'], 
             'timestamp': new_data_tab[i]['timestamp'], 
             'filename': new_data_tab[i]['filename'],
+            'user_ip': new_data_tab[i]['user_ip'], 
             'is_in_dataset': True,
             'hugging_face_link': new_data_tab[i]['hugging_face_link'] 
         }
@@ -120,7 +118,7 @@ def add_data_info(new_data_tab):
     os.remove("data.csv")
 
 def clear_data_info():
-    df = pd.DataFrame(columns=['file_id', 'label', 'user_ip', 'date', 'timestamp', 'filename', 'is_in_dataset', 'hugging_face_link'])
+    df = pd.DataFrame(columns=['file_id', 'label', 'user_name', 'date', 'timestamp', 'filename', 'user_ip', 'is_in_dataset', 'hugging_face_link'])
     df.to_csv('data.csv', index=False)
 
     api = HfApi()
@@ -132,3 +130,20 @@ def clear_data_info():
     )
 
     os.remove("data.csv")
+
+def init_data_info():
+    df = pd.DataFrame(columns=['file_id', 'label', 'user_name', 'date', 'timestamp', 'filename', 'user_ip', 'is_in_dataset', 'hugging_face_link'])
+    df.to_csv('data.csv', index=False)
+
+    api = HfApi()
+    api.upload_file(
+        path_or_fileobj="data.csv",
+        path_in_repo="data/data.csv",
+        repo_id="PFEE-TxE/audio_sampler",
+        repo_type="dataset",
+    )
+
+    os.remove("data.csv")
+
+if __name__ == "__main__":
+    init_data_info()

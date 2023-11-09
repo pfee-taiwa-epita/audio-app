@@ -14,7 +14,7 @@ FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 16000
 CHUNK = 1024
-RECORD_SECONDS = 3
+RECORD_SECONDS = 2
 
 def record(label_name, nb_sample) -> None:
     WAVE_OUTPUT_FOLDER = st.session_state['wave_output_folder']
@@ -27,6 +27,7 @@ def record(label_name, nb_sample) -> None:
 
         metadata['file_id'] = hashlib.sha256(str(uuid.uuid4()).encode()).hexdigest()[:8]
         metadata['label'] = label_name
+        metadata['user_name'] = st.session_state['user_name']
         metadata['user_ip'] = socket.gethostbyname(socket.gethostname())
         metadata['date'] = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
         metadata['timestamp'] = current_datetime.timestamp()
