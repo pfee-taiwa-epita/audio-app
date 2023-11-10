@@ -9,7 +9,7 @@ def label_filter() -> None:
 
 def sample_value() -> None:
     if 'sample_value' not in st.session_state:
-        st.session_state['sample_value'] = 2
+        st.session_state['sample_value'] = 10
     number_input_value = st.number_input("Nombre de sample 🧮", key='sample_value', min_value=1, max_value=1000)
 
 def user_name() -> None:
