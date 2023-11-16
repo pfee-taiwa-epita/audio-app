@@ -4,7 +4,7 @@ from scipy.io import wavfile
 import librosa
 import soundfile as sf
 
-from src.audioprocessor import AudioPreprocessor
+from src.preprocess.audioprocessor import AudioPreprocessor
 
 def apply_transfer(signal, transfer, interpolation='linear'):
     constant = np.linspace(-1, 1, len(transfer))
