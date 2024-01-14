@@ -1,6 +1,7 @@
 audio-sampler/audio/records/
 audio-sampler/audio/preprocess/
 dataset/
+models/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
