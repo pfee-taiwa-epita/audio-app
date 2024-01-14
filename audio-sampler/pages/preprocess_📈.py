@@ -4,7 +4,7 @@ import wave
 import os
 
 from src.utils import keep_session_state_between_pages, init_session_state
-from src.preprocess.preprocess import preprocess_audio #, preprocess_audio_2, preprocess_audio_3
+from src.preprocess.preprocess import preprocess_audio
 
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
@@ -76,7 +76,7 @@ def main() -> None:
     keep_session_state_between_pages(key_suffix='')
     st.title("Listen to preprocessed audio files 📈")
 
-    preprocess_functions = [preprocess_audio] #, preprocess_audio_2, preprocess_audio_3]
+    preprocess_functions = [preprocess_audio]
 
     cols = st.columns([1.5, 2, 8])
     with cols[0]:
